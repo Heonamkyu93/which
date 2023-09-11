@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <title>after-login</title>
+  <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+<h3 th:text="after-login">login</h3>
+
+
+
+
+</section>
+</body>
+</html>

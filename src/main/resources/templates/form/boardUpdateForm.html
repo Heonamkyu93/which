@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글수정폼</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+    <form action="./private/board-content-update" th:action="@{/private/board-content-update}" method="post"
+          th:method="post" enctype="multipart/form-data" onsubmit="vaild();">
+   <input type="hidden" th:value="${boardId}" th:name="boardId">
+
+
+    <div class='container'>
+        <div class="row">
+            <div class="col-md-12" align="center">글수정하기</div>
+        </div>
+        <br/>
+
+        <div class="row">
+            <div class="col-md-2">작성자</div>
+            <div class="col-md-4">
+                <input type="text" readonly="readonly" th:value="${boardDto.getMemberInfoDto().getMemberNickname()}"
+                       class="form-control">
+            </div>
+            <input type="hidden" th:value="${boardDto.getMemberInfoDto().getMemberId()}"  th:name="memberId">
+            <div class="col-md-2">작성일</div>
+            <div class="col-md-4">
+                <input type="text" readonly="readonly"
+                       class="form-control" th:field="${boardDto.boardCreatedDate}">
+            </div>
+        </div>
+            <br/>
+            <br/>
+            <br/>
+            <div class="row">
+                <div class="col-md-2">첨부파일</div>
+                <div class="col-md-10">
+                    <div>
+                    <input type="file" name='fileList' id='boardFile' style="margin: 15px" multiple>
+                    <button type="button" class="btn btn-danger" onclick="fileRemove();">취소</button></div>
+                    <span th:if="${file!=null}" th:text="기존업로드파일"></span><br/>
+                    <span th:each="filelist, data : ${file}">
+            <a th:text="${filelist.getFileOriginalName()}" th:id="${data.count}"
+               th:href="@{/private/board/download/{originalFileName}
+               (originalFileName=${filelist.getFileOriginalName()},fileServerName=${filelist.getFileServerName()})}">
+            </a>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="hidden" th:value="${filelist.getFileOriginalName()}" th:id="|original${data.count}|">
+                        <input type="hidden" th:value="${filelist.getFileServerName()}" th:id="|server${data.count}|">
+            <button class="btn btn-danger" type="button"
+                    th:id="|deleteButton${data.count}|"
+                    th:onclick="|deleteFile(${data.count});|">삭제하기</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </div>
+
+                </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-1">제목</div>
+        <div class="col-md-10"></div>
+        <div class="col-md-1">
+        </div>
+    </div>
+    <br/>
+    <div class='row'>
+
+        <div class="col-md-12">
+            <input type="text" class="form-control" placeholder="제목을 입력하세요.50자"
+                   th:field="${boardDto.boardTitle}" onkeyup="title_count();" maxlength="50">
+        </div>
+    </div>
+    <br/><br/>
+    <div class="row">
+        <div class="col-md-1" align='center'>내용</div>
+        <div class="col-md-10"></div>
+        <div class="col-md-1">
+            <i id='e'></i>
+        </div>
+    </div>
+    <br/>
+    <div class='row'>
+
+        <div class="col-md-12">
+					<textarea class="form-control" rows="15" cols="1000" wrap="hard"
+                              maxlength="3990" placeholder="내용을 입력하세요. 글자수제한 3990"
+                              th:field="${boardDto.boardContent}" onkeyup="cont_count();"
+                              th:maxlength="3990"></textarea>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-12" align='center'>
+            <button type="submit" class="btn btn-primary">수정하기</button>
+            <button type="button" class="btn btn-primary" onclick="back();">취소</button>
+        </div>
+
+    </div>
+    </div>
+    </form>
+    <script th:inline="javascript">
+        function deleteFile(count) {
+            let linkElement = document.getElementById(count);
+            if (linkElement) {
+                linkElement.remove();
+            }
+
+            let buttonElement = document.getElementById("deleteButton"+count);
+            if (buttonElement) {
+                buttonElement.remove();
+            }
+            let boardId=[[${boardDto.boardId}]];
+            let memberId=[[${boardDto.getMemberInfoDto().getMemberId()}]];
+            let original=document.getElementById('original'+count).value;
+            let server = document.getElementById('server' + count).value;
+            let data ={'boardId':boardId,'memberId':memberId,'fileOriginalName':original,'fileServerName':server};
+            let url = "/private/board-content-update/file-delete";
+
+            axios.post(url, data)
+                .then(function (response) {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+        function vaild() {
+            let fileInput = document.getElementById("boardFile");
+            if (fileInput.files.length === 0) {
+                fileInput.value = null;
+            }
+        }
+
+        function cont_count() {
+            let con = document.getElementById('boardContent').value;
+            let count = con.length;
+            document.getElementById('e').innerText = count + "/3990";
+
+        }
+
+        function title_count() {
+            let con = document.getElementById('boardTitle').value;
+            let count2 = con.length;
+            document.getElementById('e2').innerText = count2 + "/50";
+        }
+
+
+        function fileRemove() {
+            document.getElementById('boardFile').value = '';
+        }
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script></section>
+</section>
+</body>
+</html>

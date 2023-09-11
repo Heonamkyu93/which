@@ -1,0 +1,11 @@
+footer {
+    height: 10vh;
+    width: 100%;
+    border-top: gray solid 1px;
+    bottom: 0;
+    box-sizing: border-box;
+    text-align: center;
+    color: gray;
+    font-size: small;
+    margin-top: 10vh;
+}

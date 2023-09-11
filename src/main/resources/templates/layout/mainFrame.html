@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html th:fragment="mainFrame (title, content,links)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="${title}">프레임</title>
+   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+   <link rel="stylesheet" th:href="@{/customCss/footer.css}">
+
+    <th:block th:insert="${links}"/>
+
+</head>
+<body>
+<nav id="navbar-example2" class="navbar bg-light px-3 mb-3">
+    <a class="navbar-brand" th:href="@{/}" href="/">Spring</a>
+    <ul class="nav nav-pills">
+        <li class="nav-item" th:if="${#authorization.expression('!isAuthenticated()')}" >
+            <a class="nav-link" th:href="@{/join}" href="./join">join</a>
+        </li>
+        <li class="nav-item" th:if="${#authorization.expression('!isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/loginForm}" href="./loginForm">login</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/logout}" href="./logout">logout</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/private/withdraw}" href="./private/withdraw">회원탈퇴</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/private/board-content-save-form}" href="./private/board-content-save-form">게시글등록</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/boardList}" href="./boardList">게시글목록</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/private/before-password-changeForm}" href="./private/before-password-changeForm">비밀번호변경</a>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ROLE_GUEST'') or hasRole(''ROLE_MEMBER'')')}">
+            <a class="nav-link" th:href="@{/private/before}" href="./private/before" th:text="개인정보수정">일반회원 정보수정폼전에 비밀번호확인폼으로 이동</a>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ROLE_OAUTH'')')}">
+            <a class="nav-link" th:href="@{/oauth/member-info}" href="./oauth/member-info">오스회원 정보수정폼으로 바로이동</a>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <a class="nav-link" th:href="@{/admin/list}" href="./admin/list">회원리스트</a>
+        </li>
+    </ul>
+</nav>
+
+<div th:replace="${content}">
+    <p>레이아웃 컨텐츠</p>
+</div>
+<footer>
+    <em class="lo">Trip Grudge</em><br>
+    <small>서울특별시 000구 000로<br>
+        발행인:허남규 | 편집인:허남규<br>
+        대표전화:000-0000<br>
+        FAX:02-0000<br>
+        email:blah~blah~<br>
+        사업자번호:0000000-000000
+    </small>
+</footer>
+
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

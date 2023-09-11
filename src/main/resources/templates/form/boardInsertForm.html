@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글등록폼</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+    <div class='container'>
+        <div class="row">
+            <div class="col-md-12" align="center">글쓰기</div>
+        </div>
+        <br/>
+        <form action="./private/board-content-save" th:action="@{/private/board-content-save}" method="post"
+              th:method="post" enctype="multipart/form-data" onsubmit="vaild();">
+            <div class="row">
+                <div class="col-md-2 b">작성자</div>
+                <div class="col-md-4 b">
+                    <input type="text" readonly="readonly" th:value="${memberNickname}"
+                           class="form-control">
+                </div>
+                <input type="hidden" th:value="${memberId}" th:name="memberId">
+                <div class="col-md-2 b">작성일</div>
+                <div class="col-md-4 b">
+                    <input type="text" readonly="readonly"
+                           class="form-control" th:field="${boardDto.boardCreatedDate}">
+                </div>
+
+                <div class='row'>
+
+                    <div class="col-md-10">
+                        <input type="file" name='boardFileList' id='boardFile' style="margin: 15px" multiple>
+                        <button type="button" class="btn btn-danger" onclick="fileRemove();">취소</button>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <i>파일용량은 10mb가 최대입니다.</i></div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-1" align='center'>제목</div>
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <i id='e2'></i>
+                </div>
+            </div>
+            <div class='row'>
+
+                <div class="col-md-12">
+                    <input type="text" class="form-control" placeholder="제목을 입력하세요.50자"
+                           th:field="${boardDto.boardTitle}" onkeyup="title_count();" maxlength="50">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1" align='center'>내용</div>
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <i id='e'></i>
+                </div>
+            </div>
+            <div class='row'>
+
+                <div class="col-md-12">
+					<textarea class="form-control" rows="15" cols="1000" wrap="hard"
+                              maxlength="3990" placeholder="내용을 입력하세요. 글자수제한 3990"
+                              th:field="${boardDto.boardContent}" onkeyup="cont_count();"
+                              th:maxlength="3990"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12" align='center'>
+                    <button type="submit" class="btn btn-primary">글쓰기</button>
+                    <button type="button" class="btn btn-primary" onclick="back();">취소</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <script th:inline="javascript">
+
+        function vaild() {
+            let fileInput = document.getElementById("boardFile");
+            if (fileInput.files.length === 0) {
+                fileInput.value = null;
+            }
+        }
+
+            function cont_count() {
+                let con = document.getElementById('boardContent').value;
+                let count = con.length;
+                document.getElementById('e').innerText = count + "/3990";
+
+            }
+
+            function title_count() {
+                let con = document.getElementById('boardTitle').value;
+                let count2 = con.length;
+                document.getElementById('e2').innerText = count2 + "/50";
+            }
+
+            window.onload = function () {
+                time();
+            }
+
+            function time() {
+                let today = new Date();
+                let year = today.getFullYear();
+                let month = ('0' + (today.getMonth() + 1)).slice(-2);
+                let day = ('0' + today.getDate()).slice(-2);
+                let dateString = year + '-' + month + '-' + day;
+                console.log(dateString);
+                let hours = ('0' + today.getHours()).slice(-2);
+                let minutes = ('0' + today.getMinutes()).slice(-2);
+                let seconds = ('0' + today.getSeconds()).slice(-2);
+                let milliseconds = ('00' + today.getMilliseconds()).slice(-3);
+                let timeString = hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+                let now = dateString + ' ' + timeString;
+                document.getElementById('boardCreatedDate').value = now;
+            }
+
+            function init() {
+                setInterval(time, 1000);
+            }
+
+            init();
+
+
+            function fileRemove() {
+                document.getElementById('boardFile').value = '';
+            }
+
+
+    </script>
+
+
+</section>
+</body>
+</html>

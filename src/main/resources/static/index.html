@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+    <a class="nav-link" th:href="@{/admin/list}" href="./admin/list">list</a>
+<span th:text="index">섹션자리</span>
+
+    <!-- Spring Security를 통해 사용자 인증 및 권한 검사 -->
+    <div sec:authorize="hasRole('ROLE_USER')">
+        <!-- 'ROLE_USER' 권한을 가진 사용자에게만 표시됨 -->
+        <p>Welcome, user!</p>
+    </div>
+
+    <!-- Spring Security를 통해 사용자 인증 상태 확인 -->
+    <div sec:authorize="isAuthenticated()">
+        <!-- 사용자가 인증되었을 때 표시됨 -->
+        <p>You are authenticated.</p>
+    </div>
+
+
+</section>
+</body>
+</html>

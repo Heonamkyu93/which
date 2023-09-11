@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>joinForm</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+    <div class="container">
+
+        <div class="py-5 text-center">
+            <h2>회원 가입</h2>
+        </div>
+
+        <h4 class="mb-3">회원 정보 입력</h4>
+
+        <form action="@{/join}" th:action="@{/join}" th:object="${memberInfoDto}" method="post" onsubmit="return validateCheck();">
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberEmail">로그인 이메일</label>
+                    <input type="email" required id="memberEmail" th:field="*{memberEmail}" class="form-control"
+                           th:errorclass="field-error" onchange="changeEmail();">
+                    <div class="field-error" th:errors="*{memberEmail}"/>
+                </div>
+                <div class="col-4"><br/><button class="btn btn-primary" type="button" id="email" onclick="duplicateCheck(this);">중복확인</button></div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberPassword">비밀번호</label>
+                    <input type="password" required id="memberPassword" th:field="*{memberPassword}" class="form-control"
+                           th:errorclass="field-error">
+                    <div class="field-error" th:errors="*{memberPassword}"/>
+                </div>
+                <div class="col-4"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberPassword2">비밀번호 확인</label>
+                    <input type="text" id="memberPassword2"  class="form-control"
+                           >
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberName">이름</label>
+                    <input type="text" id="memberName" th:field="*{memberName}" class="form-control"
+                           th:errorclass="field-error">
+                    <div class="field-error" th:errors="*{memberName}"/>
+                </div>
+                <div class="col-4">
+                </div>
+            </div>
+         <div class="row">
+
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <label for="memberBirth">생일</label>
+                <input type="date" id="memberBirth" th:field="*{memberBirth}" class="form-control"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{memberBirth}"/>
+            </div>
+            <div class="col-4"></div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberNickname">닉네임</label>
+                    <input type="text" id="memberNickname" th:field="*{memberNickname}" class="form-control"
+                           th:errorclass="field-error" onchange="changeNickname();">
+                    <div class="field-error" th:errors="*{memberNickname}"/>
+                </div>
+                <div class="col-4"><br/><button class="btn btn-primary" type="button" id="nickname" onclick="duplicateCheck(this);">중복확인</button></div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+                    <label for="memberGender">성별을 선택하세요:</label>
+                    <select id="memberGender" th:field="*{memberGender}">
+                        <option value="male">남성</option>
+                        <option value="female">여성</option>
+                        <option value="ze">기타</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                </div>
+            </div>
+
+           <!-- <div class="row">
+                <div class="col-4">
+                </div>
+                <div class="col-4">
+
+                    <label for="memberPrivateAgree">
+                        <input type="checkbox" th:field="*{memberPrivateAgree}" id="memberPrivateAgree" value="yes">
+                        개인정보 수집에 동의합니다(필수)
+                    </label>
+
+                    <label for="memberEventAgree">
+                        <input type="checkbox" th:field="*{memberEventAgree}" id="memberEventAgree" value="yes">
+                        이벤트정보 제공을 위한 이메일 발송에 동의합니다(선택)
+                    </label>
+
+                </div>
+                <div class="col-4">
+                </div>
+            </div>-->
+            <hr class="my-4">
+
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-2">
+                    <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
+                </div>
+                <div class="col-2">
+                    <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='items.html'"
+                            th:onclick="|location.href='@{/}'|"
+                            type="button">취소
+                    </button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+
+        </form>
+
+    </div> <!-- /container -->
+    <script th:inline="javascript">
+        let emailCheck =false;
+        let nicknameCheck=false;
+        function duplicateCheck(btn){
+            const btnId=btn.id;
+            const memberEmail = document.getElementById("memberEmail").value;
+            const memberNickname = document.getElementById("memberNickname").value;
+            let url;
+            if(btnId==='email'){
+                 url = "/duplicateCheck?category=memberEmail&value=" + encodeURIComponent(memberEmail);
+            }else{
+                 url = "/duplicateCheck?category=memberNickname&value=" + encodeURIComponent(memberNickname);
+            }
+            axios.get(url)
+                .then(response => {
+                    // 서버 응답 처리
+                    if (response.data === true) {
+                        alert("사용 가능한"+btnId+"입니다.");
+                        console.log(btnId);
+                        if(btnId==='email'){
+                            emailCheck=true;
+                        }else{
+                            nicknameCheck=true;
+                        }
+                    } else {
+                        alert("이미 사용 중인"+btnId+"입니다.");
+                        if(btnId==='email'){
+                            emailCheck=false;
+                        }else{
+                            nicknameCheck=false;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("오류 발생: " + error);
+                });
+
+
+
+
+            console.log(btnId);
+        }
+
+        function changeEmail(){
+            emailCheck=false;
+        }
+        function changeNickname(){
+            nicknameCheck=false;
+        }
+        function validateCheck(){
+            let memberPassword =document.getElementById('memberPassword').value;
+            let memberPassword2 =document.getElementById('memberPassword2').value;
+            console.log('이메일'+emailCheck);
+            console.log(nicknameCheck);
+            if(!emailCheck) {
+                alert('이메일 중복확인을 해주세요. 중복확인후 값을 변경하면 다시 중복체크를 해야합니다');
+                return false;
+            }else if(!nicknameCheck){
+                alert('닉네임 중복확인해주세요 중복확인후 값을 변경하면 다시 중복체크를 해야합니다');
+                return false;
+            }else if(memberPassword !== memberPassword2){
+                alert('비밀번호를 확인해주세요 두 값이 일치해야합니다');
+                return false;
+            }
+            }
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</section>
+</body>
+</html>

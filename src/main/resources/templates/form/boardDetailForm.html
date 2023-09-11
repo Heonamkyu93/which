@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글</title>
+    <link rel="stylesheet" th:href="@{/customCss/boardDetail.css}">
+</head>
+<body>
+<section>
+    <div class='container' id="contentContainer">
+
+        <div class="row">
+            <div class="col-md-2">제목</div>
+            <div class="col-md-10" th:text="${boardDto.boardTitle}">제목</div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 b">작성자</div>
+            <div class="col-md-2 b">
+                <span th:text="${boardDto.getMemberInfoDto().getMemberNickname()}"></span>
+            </div>
+            <div class="col-md-1 b">작성일</div>
+            <div class="col-md-3 b">
+                <span th:text="${boardDto.boardCreatedDate}">작성일</span>
+            </div>
+            <div class="col-md-1 b">최종수정일</div>
+            <div class="col-md-3 b">
+                <span th:text="${boardDto.boardLastModifiedDate}">작성일</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">첨부파일</div>
+            <div class="col-md-10"><span th:each="filelist:${file}">
+                <input type="hidden" th:value="${filelist.getFileServerName()}">
+                <a th:text="${filelist.getFileOriginalName()}"
+                   th:href="@{/private/board/download/{originalFileName}(originalFileName=${filelist.getFileOriginalName()},fileServerName=${filelist.getFileServerName()})}"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class="col-md-2">내용</div>
+            <div class="col-md-10" id="content">
+                <span th:text="${boardDto.boardContent}">내용</span>
+            </div>
+        </div>
+        <div class="row" th:if="${boardDto.getMemberInfoDto().getMemberId()}==${memberId}">
+            <div class="col-12" align='center'>
+                <button type="button" class="btn btn-light"><a th:href="@{/private/board-content-updateForm/{boardId}(boardId=${boardDto.getBoardId()})}">수정</a> </button>
+                <button type="button" class="btn btn-light" onclick="deleteData();">삭제</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container" id="replyContainer">
+        <div class="row align-items-center justify-content-sm-center">
+            <div class="col-md-2"><span th:text="${memberNickname}?:'로그인 하세요'">댓글:</span></div>
+            <input type="hidden" th:value="${memberId}?:'로그아웃상태'" id="replyMemberId">
+            <div class="col-md-6"><input type="text" class="form-control" id="replyContent"></div>
+            <div class="col-md-3"><input type="text" id="replyCreatedDate" readonly class="form-control"> </div>
+            <div class="col-md-1" id="replyBtn1">
+                <button type="button" class="btn btn-primary" onclick="replySave();">전&nbsp;송</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" th:if="${reply}" id="replyDiv">
+        <div class="row align-items-center justify-content-sm-center" th:each="replyList,data:${reply}">
+            <input type="hidden" th:value="${replyList.replyId}" th:id="|replyId${data.count}|">
+            <div class="col-md-2"><span th:text="${replyList.memberInfoDto.getMemberNickname()}"></span> </div>
+            <div class="col-md-6"><input type="text" class="form-control" th:value="${replyList.reply}" readonly th:id="|modifyReply${data.count}|"></div>
+            <div class="col-md-2"><span th:text="${replyList.getReplyCreatedDate()}"></span> </div>
+            <div class="col-md-2">
+                <div th:if="${replyList.getMemberInfoDto().getMemberId()==memberId}">
+                <button type="button" class="btn btn-danger" th:id="|modify${data.count}|" th:onclick="|replyModify(${data.count});|">수정</button>
+                &nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger"th:id="|delete${data.count}|" th:onclick="|deleteReply(${data.count});|">삭제</button></div></div>
+
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function deleteData(){
+            let boardAuthor = [[${boardDto.memberInfoDto.getMemberId()}]];
+            let url = '/private/board-delete';
+            let boardId=[[${boardDto.boardId}]];
+            let data = {'memberId':boardAuthor,'boardId':boardId};
+            axios.post(url,data).then(function (response){
+                console.log(response.data);
+                window.location.href = response.data;
+
+            }).catch(function (error){
+                console.log(error);
+            });
+        }
+        function deleteReply(count){
+            let replyId = document.getElementById('replyId' + count).value;
+            let memberId = [[${memberId}]];
+            let boardId=[[${boardDto.boardId}]];
+            let data = {'replyId': replyId,'memberId':memberId,'boardId':boardId}
+            let url = '/private/reply-delete';
+            axios.post(url,data).then(function (response) {
+                location.reload();
+                console.log(response.data);
+            })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+
+        function replyModify(count){
+            let inputElement = document.getElementById("modifyReply"+count);
+            inputElement.removeAttribute("readonly");
+            inputElement.focus();
+
+            let newButtonId = 'modifyReplySave' + count;
+            let existingButton = document.getElementById(newButtonId);
+
+            if (!existingButton) {
+
+
+                let newButton = document.createElement('button');
+                newButton.type = 'button';
+                newButton.className = 'btn btn-danger';
+                newButton.textContent = '전송';
+                newButton.id = 'modifyReplySave' + count;
+                newButton.onclick = function() {
+                    modifyReplySave(count);
+                };
+                let modifyButton = document.getElementById('modify' + count);
+                modifyButton.parentNode.insertBefore(newButton, modifyButton.nextSibling);
+            }
+
+
+           /* inputElement.addEventListener('blur', function() {
+                inputElement.setAttribute('readonly', 'readonly');
+            });*/
+
+        }
+        function modifyReplySave(count){
+            let replyId=document.getElementById('replyId'+count).value;
+            let modifyReply=document.getElementById('modifyReply'+count).value;
+            let memberId=[[${memberId}]];
+            let boardId=[[${boardDto.boardId}]];
+
+           let modifyJson={'replyId':replyId ,
+                'boardId':boardId ,
+                'memberId': memberId,
+                'reply':modifyReply ,
+            }
+            axios.post('/private/reply-update',modifyJson)
+                .then(function (response) {
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+        function replySave() {
+            let replyMemberId = document.getElementById('replyMemberId').value;
+            let createDate = document.getElementById('replyCreatedDate').value;
+            let replyContent = document.getElementById('replyContent').value;
+            let boardId = [[${boardDto.boardId}]];
+            let memberNickname = [[${memberNickname}]]
+            let data = {
+                'memberId': replyMemberId,
+                'replyCreatedDate': createDate,
+                'reply': replyContent,
+                'boardId': boardId,
+                'memberNickname':memberNickname,
+            }
+
+            axios.post('/private/reply-save', data)
+                .then(function (response) {
+                    let responseReply = response.data;
+                    let replyDiv = document.getElementById('replyDiv');
+                    location.reload();
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+
+
+        }
+
+
+        window.onload = function () {
+            time();
+        }
+
+        function time() {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = ('0' + (today.getMonth() + 1)).slice(-2);
+            let day = ('0' + today.getDate()).slice(-2);
+            let dateString = year + '-' + month + '-' + day;
+            let hours = ('0' + today.getHours()).slice(-2);
+            let minutes = ('0' + today.getMinutes()).slice(-2);
+            let seconds = ('0' + today.getSeconds()).slice(-2);
+            let milliseconds = ('00' + today.getMilliseconds()).slice(-3);
+            let timeString = hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+            let now = dateString + ' ' + timeString;
+            document.getElementById('replyCreatedDate').value=now;
+        }
+
+        function init() {
+            setInterval(time, 1000);
+        }
+
+        init();
+
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</section>
+</body>
+</html>

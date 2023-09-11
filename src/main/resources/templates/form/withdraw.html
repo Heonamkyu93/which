@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>탈퇴</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+
+
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+               <strong>회원탈퇴시 기존 이메일로 재가입이 불가능하며 작성하신 게시글은 삭제되지않습니다.</strong>
+            </div>
+            <div class="col-4"></div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <button class="w-100 btn btn-danger btn-lg" onclick="deleteMember();" >탙퇴</button>
+            </div>
+            <div class="col-4"></div>
+        </div>
+
+    </form>
+
+    <script th:inline="javascript">
+        function deleteMember(){
+            let memberId = [[${memberId}]];
+            let url = '/private/withdraw/delete';
+            let data = {'memberId': memberId};
+            axios.post(url, data).then(response =>{
+               location.href=response.data;
+            }).catch(error =>{
+                console.error("오류 발생: " + error);
+            });
+        }
+
+
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</section>
+</body>
+</html>

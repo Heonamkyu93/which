@@ -1,0 +1,29 @@
+div{
+    border: #ccc 1px solid;
+}
+.col-md-10 {
+    word-wrap: break-word;
+}
+#content{
+    min-height: 60vh;
+}
+#contentContainer{
+    margin-top: 5vh;
+}
+
+.form-control{
+    margin: 5px;
+}
+
+.row.align-items-center > .col-md-2 {
+    border: none;
+    border-right: 1px solid #ccc;
+}
+.row.align-items-center > .col-md-1 {
+    border: none;
+    display: flex;
+}
+#replyBtn1{
+    display: flex;
+    justify-content: center;
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>findMemberInfoForm</title>
+    <link rel="stylesheet" th:href="@{/customCss/default.css}">
+</head>
+<body>
+<section>
+
+
+
+
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <label for="memberNickname">닉네임을 입력하세요</label>
+                <input type="text" id="memberNickname" name="memberNickname" class="form-control"
+                >
+            </div>
+            <div class="col-4"><br/><button type="button" class="btn btn-primary" id="findEmailButton">이메일찾기</button> </div>
+        </div>
+    <br/>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-4">
+            <label for="memberEmail">이메일을 입력하시면 새로운 비밀번호가 입력하신 이메일로 발송됩니다.</label>
+            <input type="text" id="memberEmail" name="memberEmail" class="form-control">
+        </div>
+        <div class="col-4"><br/><button type="button" class="btn btn-primary" id="findPasswordButton">비밀번호찾기</button> </div>
+    </div>
+
+<script th:inline="javascript">
+    let findPasswordButton = document.getElementById('findPasswordButton');
+    let findEmailButton = document.getElementById('findEmailButton');
+
+
+
+    findEmailButton.addEventListener('click', function() {
+        let memberNickname = document.getElementById('memberNickname').value;
+        let url = '/findEmail?memberNickname='+encodeURIComponent(memberNickname);
+        axios.get(url)
+            .then(response => {
+                if (response) {
+                    let existingResultElement = document.getElementById("result");
+
+                    if (existingResultElement) {
+                        existingResultElement.parentNode.removeChild(existingResultElement);
+                    }
+
+                    let inputElement = document.getElementById("memberNickname");
+                    let spanElement = document.createElement("span");
+                    spanElement.id = 'result';
+                    spanElement.innerHTML = response.data;
+                    inputElement.insertAdjacentElement("afterend", spanElement);
+                } else {
+                }
+            })
+            .catch(error => {
+                console.error("오류 발생: " + error);
+            });
+
+    });
+
+    findPasswordButton.addEventListener('click', function() {
+        let memberEmail = document.getElementById("memberEmail").value;
+        let url = '/findPassword?memberEmail='+encodeURIComponent(memberEmail);
+        axios.get(url)
+            .then(response => {
+                if (response) {
+                    console.log(response.data);
+                } else {
+                }
+            })
+            .catch(error => {
+                console.error("오류 발생: " + error);
+            });
+    });
+
+
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</section>
+</body>
+</html>
