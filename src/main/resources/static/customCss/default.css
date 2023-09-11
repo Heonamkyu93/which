@@ -1,0 +1,13 @@
+section{
+    min-height: 65vh;
+}
+#logDiv{
+    display: flex;
+    justify-content: space-between;
+}
+#logDiv a{
+    margin: 10px;
+}
+section{
+    margin-top: 8vh;
+}

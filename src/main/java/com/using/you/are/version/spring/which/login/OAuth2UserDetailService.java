@@ -9,6 +9,7 @@ import com.using.you.are.version.spring.which.repository.LoginRepositoryJpaData;
 import com.using.you.are.version.spring.which.repository.MemberRepository;
 import com.using.you.are.version.spring.which.utils.UtilsPasswordEncoder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -17,12 +18,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class OAuth2UserDetailService extends DefaultOAuth2UserService {
 
-    private final UtilsPasswordEncoder utilsPasswordEncoder;
+    private final PasswordEncoder utilsPasswordEncoder;
     private final MemberRepository memberRepositoryJpa;
     private final LoginRepositoryJpaData loginRepositoryJpaData;
 
@@ -44,10 +46,12 @@ public class OAuth2UserDetailService extends DefaultOAuth2UserService {
             String role = "ROLE_OAUTH";
             String gender = "ze";
             String available = "yes";
+            var uuid = UUID.randomUUID();
+            String variable = uuid.toString().substring(0, 7);
             memberInfo = new MemberInfo();
             memberInfo.setMemberEmail(oauth2UserInfo.getMail());
             memberInfo.setMemberName(oauth2UserInfo.getName());
-            memberInfo.setMemberNickname(oauth2UserInfo.getNickname()+"_"+registrationId);
+            memberInfo.setMemberNickname(oauth2UserInfo.getNickname()+"_"+variable);
             memberInfo.setMemberPassword(utilsPasswordEncoder.encode(registrationId+"_"+new Date()));
             memberInfo.setMemberBirth(oauth2UserInfo.getBirth());
             memberInfo.setMemberGender(gender);

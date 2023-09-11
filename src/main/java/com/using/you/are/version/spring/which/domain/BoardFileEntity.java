@@ -14,7 +14,7 @@ public class BoardFileEntity {
     @Id
     private String fileServerName;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 }

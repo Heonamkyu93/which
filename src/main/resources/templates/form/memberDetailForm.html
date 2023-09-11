@@ -16,11 +16,10 @@
         </div>
 
 
-        <form action="./private/member-update" th:action="@{/private/member-update}" th:object="${memberInfoDto}" method="post" onsubmit="valid();">
-
+        <form action="./user/member-update" th:action="@{/user/member-update}" th:object="${memberInfoDto}" method="post" onsubmit="return valid();">
+            <input type="hidden" th:field="*{memberId}">
             <div class="row">
                 <div class="col-4">
-                    <input type="hidden" th:field="*{memberId}">
                 </div>
                 <div class="col-4">
                     <label for="memberEmail">로그인 이메일</label>
@@ -32,16 +31,17 @@
                    <!-- <div th:if="${#authorization.expression('hasRole(''ROLE_GUEST'')')}">-->
                     <div th:if="*{memberRole=='ROLE_GUEST'}">
 
-                        <a th:href="@{/private/email-send(what='email')}">이메일 인증하기</a>
+                        <a th:href="@{/user/email-send(what='email')}">이메일 인증하기</a>
                     </div>
                     </div>
+            </div>
             <div class="row">
                 <div class="col-4">
                 </div>
                 <div class="col-4">
                     <label for="memberName">이름</label>
                     <input type="text" id="memberName" th:field="*{memberName}" class="form-control"
-                                th:errorclass="field-error">
+                                th:errorclass="field-error" required>
                     <div class="field-error" th:errors="*{memberName}"/>
                 </div>
                 <div class="col-4">
@@ -53,7 +53,7 @@
                 <div class="col-4">
                     <label for="memberNickname">닉네임</label>
                     <input type="text" id="memberNickname" th:field="*{memberNickname}" class="form-control"
-                           th:errorclass="field-error" onchange="change();">
+                           th:errorclass="field-error" onchange="change();" required>
                     <div class="field-error" th:errors="*{memberNickname}"/>
                 </div>
                 <div class="col-4"><br/><button class="btn btn-primary" type="button" id="nickname" onclick="duplicateCheck(this);">중복확인</button></div>
@@ -154,7 +154,7 @@
         }
 
         function valid(){
-            if(nicknameCheck){
+            if(!nicknameCheck){
                 alert('중복확인은 필수입니다. 중복확인후 값을 변경하지마세요.');
                 return false;
             }

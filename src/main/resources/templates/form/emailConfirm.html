@@ -10,14 +10,14 @@
 <section>
 
 
-    <form action="./private/email-confirm" th:action="@{/private/email-confirm}" method="post"  enctype="application/x-www-form-urlencoded">
+    <form action="./user/email-confirm" th:action="@{/user/email-confirm}" method="post"  enctype="application/x-www-form-urlencoded">
         <div class="row">
             <div class="col-4">
             </div>
             <div class="col-4">
                 <input type="hidden" id="memberId" name="memberId" th:value="${memberId}">
                 <label for="emailConfirm" th:text="${param.wrong != null ? param.wrong : '인증번호'}"></label>
-                <input type="text" id="emailConfirm" name="emailConfirm" class="form-control"
+                <input type="text" id="emailConfirm" name="emailConfirm" class="form-control" required
                 >
             </div>
             <div class="col-4"></div>

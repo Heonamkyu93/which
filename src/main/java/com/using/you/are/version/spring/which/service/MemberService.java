@@ -106,8 +106,8 @@ public class MemberService {
         MemberInfo memberInfo = memberRepositoryJpa.findByMemberValue(category, memberNickname);
         if(memberInfo!=null){
         MemberInfoDto memberInfoDto = MemberTransMapper.INSTANCE.entityToDTO(memberInfo);
-            String result = "입력하신 닉네임으로 찾은 이메일주소입니다. "+memberInfoDto.getMemberEmail();
-            memberInfoDto.setMemberEmail(result);
+          //  String result = "입력하신 닉네임으로 찾은 이메일주소입니다. "+memberInfoDto.getMemberEmail();
+         //   memberInfoDto.setMemberEmail(result);
         return memberInfoDto;}
         else {
             MemberInfoDto memberInfoDto = new MemberInfoDto();

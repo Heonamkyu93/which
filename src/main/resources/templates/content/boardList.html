@@ -8,45 +8,63 @@
 </head>
 <body>
 <section>
-<h1>board List</h1>
-    <table th:border="1px">
-        <tr>
-            <th th:text="글번호"></th>
-            <th th:text="글제목"></th>
-            <th th:text="작성일"></th>
-            <th th:text="작성자"></th>
-        </tr>
-        <tr th:each="test,count :${list}">
-            <td th:text="${test.getBoardId()}">글번호</td>
-            <td><a th:href="@{boardDetail/{boardId}(boardId=${test.getBoardId()})}" th:text="${test.boardTitle}">제목</a></td>
-                <td th:text="${test.boardCreatedDate}">작성일</td>
-            <td th:text="${test.memberInfo.getMemberNickname()}">작성자</td>
-        </tr>
 
-    </table>
+    <div class="container justify-content-center">
+        <div class="row">
+            <div class="col-md-12">
+                <table th:border="1px" class="table table-hover">
+                    <tr class="bg-success bg-opacity-10">
+                        <th th:text="글번호"></th>
+                        <th th:text="글제목"></th>
+                        <th th:text="작성일"></th>
+                        <th th:text="작성자"></th>
+                    </tr>
+                    <tr th:each="test,count :${list}" >
+                        <td th:text="${test.boardId}">글번호</td>
+                        <td><a th:href="@{boardDetail/{boardId}(boardId=${test.getBoardId()})}" th:text="${test.boardTitle}" class="link-success">제목</a></td>
+                        <td th:text="${test.boardCreatedDate}">작성일</td>
+                        <td th:text="${test.memberInfo.getMemberNickname()}">작성자</td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6"><a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${startPage - 2})}" th:text="pre"></a>
+                <a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${0})}" th:text="start"></a>
+                <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+
+                    <a th:if="${page != nowPage}" th:href="@{/admin/list(page=${page -1})}" th:text="${page}"></a>
+                    <strong th:if="${page == nowPage}" th:text="${page}"></strong>
+                </th:block>
+                <!--<a th:if="${nowPage!=endPage && nowPage<endPage}" th:href="@{/list(page=${nowPage+9})}" th:text="next"></a>-->
+
+                <!-- 현재 페이지와 총 페이지 수 계산 -->
+                <div th:with="nowPage=${list.getNumber()+ 1}, totalPage=${list.getTotalPages()}"></div>
+
+                <!-- 다음으로 가기 버튼 렌더링 -->
+                <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${startPage + 9})}" th:text="Next"></a>
+                <!-- <a th:if="${startPage + 10 <= totalPage}" th:href="@{/list(page=${startPage + 9})}" th:text="Next"></a>-->
+                <!--<a th:if="${nowPage + 10 > totalPage}" th:href="@{/list(page=${totalPage -1})}" th:text="Last"></a>-->
+                <!--<a th:if="${nowPage<=totalPage}" th:href="@{/list(page=${totalPage}-1)}" th:text="Last2"></a>-->
+                <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${totalPage}-1)}"  th:text="Last"></a>
+
+
+            </div>
+            <div class="col-md-3">
+                <strong th:if="${memberRole=='ROLE_GUEST'}" th:text="'게시글을 등록하려면 이메일 인증을 해주세요'">타임리프 문자 리터럴은 띄어쓰기가 없으면 '생략 가능하지만 띄어쓰기가 있으면 '로 감싸야 합니다.</strong>
+                <button th:if="${memberRole!='ROLE_GUEST'&&memberRole!=null}" class="btn btn-outline-success bg-opacity-10">
+                <a class="nav-link" th:href="@{/private/board-content-save-form}" href="./private/board-content-save-form">게시글등록</a>
+            </button></div>
+        </div>
+    </div>
 
 
 
 
 
-<a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${startPage - 2})}" th:text="pre"></a>
-<a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${0})}" th:text="start"></a>
-<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-
-    <a th:if="${page != nowPage}" th:href="@{/admin/list(page=${page -1})}" th:text="${page}"></a>
-    <strong th:if="${page == nowPage}" th:text="${page}"></strong>
-</th:block>
-<!--<a th:if="${nowPage!=endPage && nowPage<endPage}" th:href="@{/list(page=${nowPage+9})}" th:text="next"></a>-->
-
-<!-- 현재 페이지와 총 페이지 수 계산 -->
-<div th:with="nowPage=${list.getNumber()+ 1}, totalPage=${list.getTotalPages()}"></div>
-
-<!-- 다음으로 가기 버튼 렌더링 -->
-<a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${startPage + 9})}" th:text="Next"></a>
-   <!-- <a th:if="${startPage + 10 <= totalPage}" th:href="@{/list(page=${startPage + 9})}" th:text="Next"></a>-->
-<!--<a th:if="${nowPage + 10 > totalPage}" th:href="@{/list(page=${totalPage -1})}" th:text="Last"></a>-->
-<!--<a th:if="${nowPage<=totalPage}" th:href="@{/list(page=${totalPage}-1)}" th:text="Last2"></a>-->
-    <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${totalPage}-1)}"  th:text="Last"></a>
 
 
 

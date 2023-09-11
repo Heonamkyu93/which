@@ -29,15 +29,15 @@ public class BoardEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date boardLastModifiedDate; // 최종수정일
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberInfo memberInfo;
 
 
-    @OneToMany (mappedBy = "boardEntity", cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany (mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<BoardFileEntity> boardFileEntities = new ArrayList<>();
 
-    @OneToMany (mappedBy = "boardEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private  List<ReplyEntity> replyEntities = new ArrayList<>();
 
 

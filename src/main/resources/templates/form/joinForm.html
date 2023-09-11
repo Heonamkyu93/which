@@ -8,12 +8,12 @@
 <body>
 <section>
     <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4"><h3>회원가입</h3></div>
+            <div class="col-4"></div>
 
-        <div class="py-5 text-center">
-            <h2>회원 가입</h2>
         </div>
-
-        <h4 class="mb-3">회원 정보 입력</h4>
 
         <form action="@{/join}" th:action="@{/join}" th:object="${memberInfoDto}" method="post" onsubmit="return validateCheck();">
 
@@ -26,7 +26,7 @@
                 <div class="col-4">
                     <label for="memberEmail">로그인 이메일</label>
                     <input type="email" required id="memberEmail" th:field="*{memberEmail}" class="form-control"
-                           th:errorclass="field-error" onchange="changeEmail();">
+                           th:errorclass="field-error" onchange="changeEmail();" placeholder="이메일형식을 지켜주세요">
                     <div class="field-error" th:errors="*{memberEmail}"/>
                 </div>
                 <div class="col-4"><br/><button class="btn btn-primary" type="button" id="email" onclick="duplicateCheck(this);">중복확인</button></div>
@@ -37,7 +37,7 @@
                 <div class="col-4">
                     <label for="memberPassword">비밀번호</label>
                     <input type="password" required id="memberPassword" th:field="*{memberPassword}" class="form-control"
-                           th:errorclass="field-error">
+                           th:errorclass="field-error" placeholder="비밀번호는 최소10 최대35자까지 가능합니다." minlength="10" maxlength="35">
                     <div class="field-error" th:errors="*{memberPassword}"/>
                 </div>
                 <div class="col-4"></div>
@@ -48,8 +48,7 @@
                 </div>
                 <div class="col-4">
                     <label for="memberPassword2">비밀번호 확인</label>
-                    <input type="text" id="memberPassword2"  class="form-control"
-                           >
+                    <input type="password" id="memberPassword2"  class="form-control" minlength="10" maxlength="35" placeholder="비밀번호와 같은값을 입력하세요" required>
                 </div>
                 <div class="col-4"></div>
             </div>
@@ -59,7 +58,7 @@
                 <div class="col-4">
                     <label for="memberName">이름</label>
                     <input type="text" id="memberName" th:field="*{memberName}" class="form-control"
-                           th:errorclass="field-error">
+                           th:errorclass="field-error" required>
                     <div class="field-error" th:errors="*{memberName}"/>
                 </div>
                 <div class="col-4">
@@ -72,7 +71,7 @@
             <div class="col-4">
                 <label for="memberBirth">생일</label>
                 <input type="date" id="memberBirth" th:field="*{memberBirth}" class="form-control"
-                       th:errorclass="field-error">
+                       th:errorclass="field-error" required>
                 <div class="field-error" th:errors="*{memberBirth}"/>
             </div>
             <div class="col-4"></div>
@@ -85,7 +84,7 @@
                 <div class="col-4">
                     <label for="memberNickname">닉네임</label>
                     <input type="text" id="memberNickname" th:field="*{memberNickname}" class="form-control"
-                           th:errorclass="field-error" onchange="changeNickname();">
+                           th:errorclass="field-error" onchange="changeNickname();" required maxlength="30" minlength="2" placeholder="2자이상 30자 이하로 만들어주세요">
                     <div class="field-error" th:errors="*{memberNickname}"/>
                 </div>
                 <div class="col-4"><br/><button class="btn btn-primary" type="button" id="nickname" onclick="duplicateCheck(this);">중복확인</button></div>

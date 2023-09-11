@@ -67,7 +67,7 @@
 
         <div class="col-md-12">
             <input type="text" class="form-control" placeholder="제목을 입력하세요.50자"
-                   th:field="${boardDto.boardTitle}" onkeyup="title_count();" maxlength="50">
+                   th:field="${boardDto.boardTitle}" onkeyup="title_count();" maxlength="50" required>
         </div>
     </div>
     <br/><br/>
@@ -85,7 +85,7 @@
 					<textarea class="form-control" rows="15" cols="1000" wrap="hard"
                               maxlength="3990" placeholder="내용을 입력하세요. 글자수제한 3990"
                               th:field="${boardDto.boardContent}" onkeyup="cont_count();"
-                              th:maxlength="3990"></textarea>
+                              th:maxlength="3990" required></textarea>
         </div>
     </div>
     <br/>

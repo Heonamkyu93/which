@@ -10,7 +10,7 @@
 <section>
 
 
-    <form action="/private/memberDetailCheck" method="post" th:object="${memberInfoDto}" enctype="application/x-www-form-urlencoded">
+    <form action="/user/memberDetailCheck" method="post" th:object="${memberInfoDto}" enctype="application/x-www-form-urlencoded">
         <input type="hidden" th:field="*{memberId}" th:value="${memberInfoDto.memberId}" >
         <div class="row">
             <div class="col-4">
@@ -18,7 +18,7 @@
             <div class="col-4">
                     <span th:text="${wrong}?: _"></span>
                 <label for="memberPassword">비밀번호 확인</label>
-                <input type="text" th:field="*{memberPassword}" class="form-control"
+                <input type="text" th:field="*{memberPassword}" class="form-control" required
                 >
             </div>
             <div class="col-4"></div>

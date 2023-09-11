@@ -14,34 +14,39 @@
     <a class="navbar-brand" th:href="@{/}" href="/">Spring</a>
     <ul class="nav nav-pills">
         <li class="nav-item" th:if="${#authorization.expression('!isAuthenticated()')}" >
-            <a class="nav-link" th:href="@{/join}" href="./join">join</a>
+            <a class="nav-link link-success" th:href="@{/join}" href="./join">join</a>
         </li>
         <li class="nav-item" th:if="${#authorization.expression('!isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/loginForm}" href="./loginForm">login</a>
+            <a class="nav-link link-success" th:href="@{/loginForm}" href="./loginForm">login</a>
         </li>
-        <li th:if="${#authorization.expression('isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/logout}" href="./logout">logout</a>
-        </li>
-        <li th:if="${#authorization.expression('isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/private/withdraw}" href="./private/withdraw">회원탈퇴</a>
-        </li>
-        <li th:if="${#authorization.expression('isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/private/board-content-save-form}" href="./private/board-content-save-form">게시글등록</a>
-        </li>
-        <li th:if="${#authorization.expression('isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/boardList}" href="./boardList">게시글목록</a>
-        </li>
-        <li th:if="${#authorization.expression('isAuthenticated()')}">
-            <a class="nav-link" th:href="@{/private/before-password-changeForm}" href="./private/before-password-changeForm">비밀번호변경</a>
+        <li>
+            <a class="nav-link link-success" th:href="@{/boardList}" href="./boardList">게시글목록</a>
         </li>
         <li th:if="${#authorization.expression('hasRole(''ROLE_GUEST'') or hasRole(''ROLE_MEMBER'')')}">
-            <a class="nav-link" th:href="@{/private/before}" href="./private/before" th:text="개인정보수정">일반회원 정보수정폼전에 비밀번호확인폼으로 이동</a>
+            <a class="nav-link link-warning" th:href="@{/user/before}" href="./user/before" th:text="개인정보수정">일반회원 정보수정폼전에 비밀번호확인폼으로 이동</a>
         </li>
         <li th:if="${#authorization.expression('hasRole(''ROLE_OAUTH'')')}">
-            <a class="nav-link" th:href="@{/oauth/member-info}" href="./oauth/member-info">오스회원 정보수정폼으로 바로이동</a>
+            <a class="nav-link link-warning" th:href="@{/oauth/member-info}" href="./oauth/member-info">오스회원 정보수정폼으로 바로이동</a>
+        </li>
+        <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link link-warning" th:href="@{/logout}" href="./logout">logout</a>
+        </li>
+        <li th:if="${#authorization.expression('hasRole(''ROLE_GUEST'') or hasRole(''ROLE_MEMBER'')')}">
+            <a class="nav-link link-danger" th:href="@{/user/withdraw}" href="./user/withdraw">회원탈퇴</a>
+        </li>
+        <!--<li th:if="${#authorization.expression('isAuthenticated()')}">
+            <a class="nav-link" th:href="@{/private/board-content-save-form}" href="./private/board-content-save-form">게시글등록</a>
+        </li>-->
+
+        <li th:if="${#authorization.expression('isAuthenticated()')&&#authorization.expression('hasRole(''ROLE_GUEST'') or hasRole(''ROLE_MEMBER'')')}">
+            <a class="nav-link link-warning" th:href="@{/user/before-password-changeForm}" href="./user/before-password-changeForm">비밀번호변경</a>
+        </li>
+
+        <li th:if="${#authorization.expression('hasRole(''ROLE_OAUTH'')')}">
+            <a class="nav-link link-danger" th:href="@{/user/oauth2/withdrawForm}" href="./user/oauth2/withdrawForm">회원탈퇴</a>
         </li>
         <li th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-            <a class="nav-link" th:href="@{/admin/list}" href="./admin/list">회원리스트</a>
+            <a class="nav-link link-primary" th:href="@{/admin/list}" href="./admin/list">회원리스트</a>
         </li>
     </ul>
 </nav>

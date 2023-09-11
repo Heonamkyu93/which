@@ -27,9 +27,9 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeRequests()
                 .requestMatchers("/user/**").authenticated()
-                .requestMatchers("/user/**").access("hasAnyRole('ROLE_MEMBER')")
+                .requestMatchers("/user/**").access("hasAnyRole('ROLE_MEMBER') or hasRole('ROLE_OAUTH') or hasRole('ROLE_ADMIN')or hasRole('ROLE_MANAGER')or hasRole('ROLE_GUEST')")
                 .requestMatchers("/oauth/**").access("hasAnyRole('ROLE_OAUTH')")
-                .requestMatchers("/private/**").access("hasAnyRole('ROLE_MEMBER') or hasRole('ROLE_OAUTH') or hasRole('ROLE_GUEST')")
+                .requestMatchers("/private/**").access("hasAnyRole('ROLE_MEMBER') or hasRole('ROLE_OAUTH') or hasRole('ROLE_ADMIN')or hasRole('ROLE_MANAGER')")
                 .requestMatchers("/manager/**").access("hasAnyRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
                 .requestMatchers("/admin/**").access("hasAnyRole('ROLE_ADMIN')")
                 .requestMatchers("/","/logout").permitAll()

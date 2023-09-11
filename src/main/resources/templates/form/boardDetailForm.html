@@ -58,7 +58,7 @@
         <div class="row align-items-center justify-content-sm-center">
             <div class="col-md-2"><span th:text="${memberNickname}?:'로그인 하세요'">댓글:</span></div>
             <input type="hidden" th:value="${memberId}?:'로그아웃상태'" id="replyMemberId">
-            <div class="col-md-6"><input type="text" class="form-control" id="replyContent"></div>
+            <div class="col-md-6"><input type="text" class="form-control" id="replyContent" required></div>
             <div class="col-md-3"><input type="text" id="replyCreatedDate" readonly class="form-control"> </div>
             <div class="col-md-1" id="replyBtn1">
                 <button type="button" class="btn btn-primary" onclick="replySave();">전&nbsp;송</button>

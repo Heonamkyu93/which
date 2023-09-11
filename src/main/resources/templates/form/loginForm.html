@@ -34,23 +34,28 @@
             <div class="col-4"></div>
         </div>
 
-
+            <br/>
         <div class="row">
             <div class="col-4"></div>
-            <div class="col-4">
-                <a href="./oauth2/authorization/google">구글</a>
-                <a href="./oauth2/authorization/naver">네이버</a>
-                <a href="./oauth2/authorization/github">git</a>
-                <a href="./findMemberInfoForm">아이디/비밀번호찾기</a>
+            <div class="col-4 justify-content-center" id="logDiv">
+                <a href="./oauth2/authorization/google"><img src="/img/google.png" th:src="@{/img/google.png}"></a>
+                <a href="./oauth2/authorization/naver"><img src="/img/naver.png" th:src="@{/img/naver.png}"></a>
+                <a href="./oauth2/authorization/github"><img src="/img/github.png" th:src="@{/img/github.png}"></a>
             </div>
             <div class="col-4"></div>
         </div>
+            <br/>
+        <div class="row align-items-center">
+            <div class="col-4"></div>
+            <div class="col-4"><a href="./findMemberInfoForm">아이디/비밀번호찾기</a></div>
+            <div class="col-4"></div>
 
-
+        </div>
+        <br/>
         <div class="row">
             <div class="col-4"></div>
             <div class="col-4">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">로그인</button>
+                <button class="w-100 btn btn-outline-success btn-lg" type="submit">로그인</button>
             </div>
             <div class="col-4"></div>
         </div>

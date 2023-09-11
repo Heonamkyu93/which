@@ -38,17 +38,17 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/private/email-send") //회원정보폼에서 이메일 인증  나중에 비밀번호 찾기도 재활용하자
+    @GetMapping("/user/email-send") //회원정보폼에서 이메일 인증  나중에 비밀번호 찾기도 재활용하자
     public String emailSend(@RequestParam("what") String what, @AuthenticationPrincipal CustomUserDetails customUserDetails, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         HttpSession session = request.getSession();
         String email = customUserDetails.getUsername();
         Long id = customUserDetails.getMemberInfo().getMemberId();
         memberService.emailSend(id, email, what, session);
         redirectAttributes.addAttribute("memberId", id);
-        return "redirect:/private/email-numberInput/{memberId}";
+        return "redirect:/user/email-numberInput/{memberId}";
     }
 
-    @GetMapping("/private/email-numberInput/{memberId}")  //이메일인증번호 입력폼   새로고침하면 메일을 보내서 리다이렉트하는거 만듬
+    @GetMapping("/user/email-numberInput/{memberId}")  //이메일인증번호 입력폼   새로고침하면 메일을 보내서 리다이렉트하는거 만듬
     public String emailConfirmForm(@PathVariable String memberId, Model model, RedirectAttributes redirectAttributes) {
         if (redirectAttributes.getAttribute("wrong") != null)
             model.addAttribute("wrong", redirectAttributes.getAttribute("wrong"));
@@ -56,15 +56,16 @@ public class MemberController {
         return "form/emailConfirm";
     }
 
-    @PostMapping("/private/email-confirm")  // 인증번호 확인  여기서 새로고침하면 이메일이 계속 가니깐 처리해야된다
-    public String emailConfirm(@RequestParam String emailConfirm, @RequestParam Long memberId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    @PostMapping("/user/email-confirm")  // 인증번호 확인  여기서 새로고침하면 이메일이 계속 가니깐 처리해야된다
+    public String emailConfirm(@RequestParam String emailConfirm, @RequestParam Long memberId, HttpServletRequest request, RedirectAttributes redirectAttributes,@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         boolean result = memberService.emailConfirm(emailConfirm, memberId, request);
         redirectAttributes.addAttribute("wrong", "인증번호가틀렸습니다");  // 에러처리가 안넘어간다
         redirectAttributes.addAttribute("memberId", memberId);
-        if (result)
-            return "redirect:/";
+        if (result){
+            customUserDetails.getMemberInfo().setMemberRole("ROLE_MEMBER");
+            return "redirect:/";}
         else {
-            return "redirect:/private/email-numberInput/{memberId}";
+            return "redirect:/user/email-numberInput/{memberId}";
         }
     }
 
@@ -76,7 +77,7 @@ public class MemberController {
         return "form/memberDetailForm";
     }
 
-    @GetMapping("/private/before")   // 일반 회원 개인정보 수정하기전에 비밀번호확인폼
+    @GetMapping("/user/before")   // 일반 회원 개인정보 수정하기전에 비밀번호확인폼
     public String memberDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         MemberInfoDto memberInfoDto = new MemberInfoDto();
         memberInfoDto.setMemberId(customUserDetails.getMemberInfo().getMemberId());
@@ -84,19 +85,19 @@ public class MemberController {
         return "form/beforeDetailForm";
     }
 
-    @PostMapping("/private/memberDetailCheck")//비밀번호 확인후 리다이렉트
+    @PostMapping("/user/memberDetailCheck")//비밀번호 확인후 리다이렉트
     public String memberDetailCheck(@ModelAttribute MemberInfoDto memberInfoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Long id = memberInfoDto.getMemberId();
         memberInfoDto = supervisorService.memberDetailCheck(memberInfoDto);
         if (memberInfoDto == null) {
             redirectAttributes.addAttribute("memberId", id);
-            return "redirect:/private/before/{memberId}";
+            return "redirect:/user/before/{memberId}";
         }
         redirectAttributes.addAttribute("memberId", memberInfoDto.getMemberId());
-        return "redirect:/private/member-info/{memberId}";
+        return "redirect:/user/member-info/{memberId}";
     }
 
-    @GetMapping("/private/before/{memberId}")   // 틀린비밀번호를 입력했을경우 리다이렉트
+    @GetMapping("/user/before/{memberId}")   // 틀린비밀번호를 입력했을경우 리다이렉트
     public String againBefore(@PathVariable Long memberId, Model model) {
         MemberInfoDto memberInfoDto = new MemberInfoDto();
         memberInfoDto.setMemberId(memberId);
@@ -106,7 +107,7 @@ public class MemberController {
     }
 
 
-    @GetMapping("/private/member-info/{memberId}")  // 일반회원 개인정보폼으로
+    @GetMapping("/user/member-info/{memberId}")  // 일반회원 개인정보폼으로
     public String findByMemberId(@PathVariable Long memberId, Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails, RedirectAttributes redirectAttributes) {
         MemberInfoDto memberInfoDto = memberService.findByMemberId(memberId);
         model.addAttribute("memberInfoDto", memberInfoDto);
@@ -126,13 +127,13 @@ public class MemberController {
         return result;
     }
 
-    @PostMapping("/private/member-update")  // 회원정보 업데이트 처리
+    @PostMapping("/user/member-update")  // 회원정보 업데이트 처리
     public String memberUpdate(@ModelAttribute MemberInfoDto memberInfoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) return "form/memberDetailForm";
         MemberInfoDto memberInfoDto1 = memberService.memberUpdate(memberInfoDto);
         redirectAttributes.addAttribute("memberId", memberInfoDto1.getMemberId());
         redirectAttributes.addAttribute("success", "정보수정완료");
-        return "redirect:/private/member-info/{memberId}";
+        return "redirect:/user/member-info/{memberId}";
     }
 
     @GetMapping("/findMemberInfoForm")   //이메일/비밀번호 찾기폼
@@ -155,7 +156,7 @@ public class MemberController {
 
         return null;
     }
-    @GetMapping("/private/before-password-changeForm")  // 비밀번호 변경전 본인확인폼
+    @GetMapping("/user/before-password-changeForm")  // 비밀번호 변경전 본인확인폼
     public String beforePasswordChangeForm(@AuthenticationPrincipal CustomUserDetails customUserDetails,Model model,RedirectAttributes redirectAttributes){
         if(redirectAttributes.getAttribute("wrong")!=null) model.addAttribute("wrong",redirectAttributes.getAttribute("wrong"));
         MemberInfoDto memberInfoDto = new MemberInfoDto();
@@ -163,19 +164,19 @@ public class MemberController {
         model.addAttribute("memberInfoDto", memberInfoDto);
         return "form/beforeChangePasswordForm";
     }
-    @PostMapping("private/before-member-password-change")    //비밀번호 변경전 비밀번호확인
+    @PostMapping("user/before-member-password-change")    //비밀번호 변경전 비밀번호확인
     public String beforePasswordChangeCheck(@ModelAttribute MemberInfoDto memberInfoDto,BindingResult bindingResult,Model model,RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) return "form/beforeChangePasswordForm";
         memberInfoDto = supervisorService.memberDetailCheck(memberInfoDto);
         if (memberInfoDto == null) {
             redirectAttributes.addAttribute("wron", "잘못된비밀번호");
-            return "redirect:/private/before-password-changeForm";
+            return "redirect:/user/before-password-changeForm";
         }
         redirectAttributes.addAttribute("memberId", memberInfoDto.getMemberId());
-        return "redirect:/private/password-changeForm/{memberId}";
+        return "redirect:/user/password-changeForm/{memberId}";
 
     }
-    @GetMapping("/private/password-changeForm/{memberId}")  // 비밀번호 변경폼
+    @GetMapping("/user/password-changeForm/{memberId}")  // 비밀번호 변경폼
     public String passwordChangeForm(@PathVariable Long memberId,Model model,@ModelAttribute MemberInfoDto memberInfoDto,BindingResult bindingResult,@AuthenticationPrincipal CustomUserDetails customUserDetails){
         log.info("memberId={}",memberId);
         log.info("customUserDetails={}",customUserDetails.getMemberInfo().getMemberId());
@@ -184,13 +185,13 @@ public class MemberController {
         model.addAttribute("memberInfoDto", memberInfoDto);
         return "form/changePasswordForm";
     }
-    @PostMapping("/private/password-change")   // 비밀번호 변경
+    @PostMapping("/user/password-change")   // 비밀번호 변경
     public String newPasswordSave(@RequestParam Long memberId,@RequestParam String memberPassword){
         memberService.changePassword(memberId,memberPassword);
         return "redirect:/";
     }
 
-    @GetMapping("/private/withdraw")  // 탈퇴전 본인확인폼
+    @GetMapping("/user/withdraw")  // 탈퇴전 본인확인폼
     public String beforeMemberWithdrawForm(@AuthenticationPrincipal CustomUserDetails customUserDetails,Model model,@ModelAttribute MemberInfoDto memberInfoDto,RedirectAttributes redirectAttributes){
         if(redirectAttributes.getAttribute("wrong")!=null) model.addAttribute("wrong",redirectAttributes.getAttribute("wrong"));
         model.addAttribute("memberInfoDto", memberInfoDto);
@@ -198,7 +199,7 @@ public class MemberController {
         model.addAttribute("memberId", customUserDetails.getMemberInfo().getMemberId());
         return "form/beforeWithraw";
     }
-    @PostMapping("/private/before-withdraw")
+    @PostMapping("/user/before-withdraw")  // 탈퇴전 본인확인
     public String beforeMemberWithdraw(@ModelAttribute MemberInfoDto memberInfoDto,BindingResult bindingResult,RedirectAttributes redirectAttributes){
         Long id = null;
         if(memberInfoDto!=null) {id = memberInfoDto.getMemberId();}
@@ -206,21 +207,30 @@ public class MemberController {
         memberInfoDto = supervisorService.memberDetailCheck(memberInfoDto);
         if (memberInfoDto == null) {
             redirectAttributes.addAttribute("wron", "잘못된비밀번호");
-            return "redirect:/private/withdraw";
+            return "redirect:/user/withdraw";
         }
         redirectAttributes.addAttribute("memberId", id);
-        return "redirect:/private/withdrawForm/{memberId}";
+        return "redirect:/user/withdrawForm/{memberId}";
     }
-    @GetMapping ("/private/withdrawForm/{memberId}")
+    @GetMapping ("/user/withdrawForm/{memberId}")   //탈퇴폼
     public String memberWithdraw(@PathVariable Long memberId,@AuthenticationPrincipal CustomUserDetails customUserDetails,Model model){
         if(customUserDetails.getMemberInfo().getMemberId()!=memberId) return "redirect:/";
         model.addAttribute("memberId", customUserDetails.getMemberInfo().getMemberId());
         return "form/withdraw";
     }
-    @PostMapping("/private/withdraw/delete")
+    @GetMapping("/user/oauth2/withdrawForm")  //오스탈퇴폼호출하는 겟매핑으로 리다이렉트
+    public String oauthWithdraw(@AuthenticationPrincipal CustomUserDetails customUserDetails,RedirectAttributes redirectAttributes){
+        if(customUserDetails!=null && !customUserDetails.getMemberInfo().getMemberRole().equals("ROLE_OAUTH")) return "redirect:/";
+        redirectAttributes.addAttribute("memberId", customUserDetails.getMemberInfo().getMemberId());
+        return "redirect:/user/withdrawForm/{memberId}";
+    }
+
+
+    @PostMapping("/user/withdraw/delete")
     @ResponseBody
     public String withdrawDelete(@RequestBody MemberInfoDto memberInfoDto){
         memberService.withdraw(memberInfoDto);
         return "/logout";
     }
+
 }

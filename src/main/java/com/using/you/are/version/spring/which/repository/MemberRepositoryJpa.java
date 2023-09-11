@@ -103,6 +103,8 @@ public class MemberRepositoryJpa implements MemberRepository {
         memberInfo.setMemberAvailable("no");
         memberInfo.setMemberNickname("탈퇴한회원");
         memberInfo.setMemberName("탈퇴한회원");
+        memberInfo.setMemberRole("ROLE_NONE");
+        memberInfo.setMemberEmail("탈퇴한회원"+memberId);
         memberInfo.setMemberPassword(fakePassword);
     }
 }

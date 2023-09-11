@@ -49,7 +49,8 @@ public class CustomUserDetails implements UserDetails , OAuth2User {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        boolean result=(memberInfo.getMemberRole().equals("ROLE_NONE")) ? false:true;
+        return result;
     }
 
     @Override

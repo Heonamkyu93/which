@@ -61,7 +61,7 @@ public class BoardController {
         return "redirect:/boardList";
     }
     @GetMapping("/boardList") //글목록
-    public String boardList(Model model,@PageableDefault(page = 0, size = 10, sort = "boardCreatedDate", direction = Sort.Direction.DESC) Pageable pageable){
+    public String boardList(Model model,@PageableDefault(page = 0, size = 10, sort = "boardCreatedDate", direction = Sort.Direction.DESC) Pageable pageable,@AuthenticationPrincipal CustomUserDetails customUserDetails){
         Page<BoardEntity> boardList = boardService.boardList(pageable);
         int totalPage = boardList.getTotalPages();
         int nowPage = pageable.getPageNumber() + 1;
@@ -72,6 +72,9 @@ public class BoardController {
         }
         if (nowPage < 0) {
             nowPage = pageable.getPageNumber() + 1;
+        }
+        if(customUserDetails!=null){
+            model.addAttribute("memberRole",customUserDetails.getMemberInfo().getMemberRole());
         }
         model.addAttribute("totalPage", totalPage);
         model.addAttribute("nowPage", nowPage);
@@ -157,7 +160,7 @@ public class BoardController {
         return replyDto;
     }
 
-    @PostMapping("/private/board-delete")
+    @PostMapping("/private/board-delete")  // 게시글삭제 (파일삭제처리안함
     @ResponseBody
     public String deleteBoard(@RequestBody BoardDto boardDto){
         boardService.deleteBoard(boardDto);

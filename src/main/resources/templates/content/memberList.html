@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:replace="~{layout/mainFrame :: mainFrame(~{::title},~{::section},~{::link})}"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,54 +8,63 @@
 </head>
 <body>
 <section>
-<h1>Member List</h1>
-    <table border="1px">
-        <tr>
-            <th th:text="이름"></th>
-            <th th:text="이메일"></th>
-            <th th:text="가입일"></th>
-        </tr>
-        <tr th:each="test,count :${list}">
-            <td><a th:href="@{/admin/memberDetail/{memberId}(memberId=${test.memberId})}" th:text="${test.memberName}">이름</a></td>
-                <td th:text="${test.memberEmail}">이메일</td>
-            <td th:text="${test.memberJoinDate}">가입일</td>
-        </tr>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12"><h1>회원목록</h1>
+                <table border="1px" class="table table-hover">
+                    <tr>
+                        <th th:text="이름"></th>
+                        <th th:text="이메일"></th>
+                        <th th:text="가입일"></th>
+                    </tr>
+                    <tr th:each="test,count :${list}">
+                        <td><a th:href="@{/admin/memberDetail/{memberId}(memberId=${test.memberId})}"
+                               th:text="${test.memberName}">이름</a></td>
+                        <td th:text="${test.memberEmail}">이메일</td>
+                        <td th:text="${test.memberJoinDate}">가입일</td>
+                    </tr>
 
-    </table>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"><a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${startPage - 2})}"
+                                     th:text="pre"></a>
+                <a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${0})}" th:text="start"></a>
+                <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
 
+                    <a th:if="${page != nowPage}" th:href="@{/admin/list(page=${page -1})}" th:text="${page}"></a>
+                    <strong th:if="${page == nowPage}" th:text="${page}"></strong>
+                </th:block>
+                <!--<a th:if="${nowPage!=endPage && nowPage<endPage}" th:href="@{/list(page=${nowPage+9})}" th:text="next"></a>-->
 
+                <!-- 현재 페이지와 총 페이지 수 계산 -->
+                <div th:with="nowPage=${list.getNumber()+ 1}, totalPage=${list.getTotalPages()}"></div>
 
+                <!-- 다음으로 가기 버튼 렌더링 -->
+                <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${startPage + 9})}"
+                   th:text="Next"></a>
+                <!-- <a th:if="${startPage + 10 <= totalPage}" th:href="@{/list(page=${startPage + 9})}" th:text="Next"></a>-->
+                <!--<a th:if="${nowPage + 10 > totalPage}" th:href="@{/list(page=${totalPage -1})}" th:text="Last"></a>-->
+                <!--<a th:if="${nowPage<=totalPage}" th:href="@{/list(page=${totalPage}-1)}" th:text="Last2"></a>-->
+                <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${totalPage}-1)}"
+                   th:text="Last"></a>
+            </div>
+            <div class="col-md-4"></div>
 
-
-<a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${startPage - 2})}" th:text="pre"></a>
-<a th:if="${nowPage > 1}" th:href="@{/admin/list(page=${0})}" th:text="start"></a>
-<th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-
-    <a th:if="${page != nowPage}" th:href="@{/admin/list(page=${page -1})}" th:text="${page}"></a>
-    <strong th:if="${page == nowPage}" th:text="${page}"></strong>
-</th:block>
-<!--<a th:if="${nowPage!=endPage && nowPage<endPage}" th:href="@{/list(page=${nowPage+9})}" th:text="next"></a>-->
-
-<!-- 현재 페이지와 총 페이지 수 계산 -->
-<div th:with="nowPage=${list.getNumber()+ 1}, totalPage=${list.getTotalPages()}"></div>
-
-<!-- 다음으로 가기 버튼 렌더링 -->
-<a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${startPage + 9})}" th:text="Next"></a>
-   <!-- <a th:if="${startPage + 10 <= totalPage}" th:href="@{/list(page=${startPage + 9})}" th:text="Next"></a>-->
-<!--<a th:if="${nowPage + 10 > totalPage}" th:href="@{/list(page=${totalPage -1})}" th:text="Last"></a>-->
-<!--<a th:if="${nowPage<=totalPage}" th:href="@{/list(page=${totalPage}-1)}" th:text="Last2"></a>-->
-    <a th:if="${startPage + 10 <= totalPage}" th:href="@{/admin/list(page=${totalPage}-1)}"  th:text="Last"></a>
-
+        </div>
+    </div>
 
 
     <script th:inline="javascript">
 
-      let list=[[${list}]];
-        let listParse=list.content[0];
-      window.onload = function() {
-          console.log(list.content[0]);
-      }
-        document.getElementById("myLink").addEventListener("click", function(event) {
+        let list = [[${list}]];
+        let listParse = list.content[0];
+        window.onload = function () {
+            console.log(list.content[0]);
+        }
+        document.getElementById("myLink").addEventListener("click", function (event) {
             event.preventDefault(); // 기본 동작(링크 이동)을 막음
             var pathVariable = "myPathVariable"; // 숨길 경로 변수
             var baseUrl = window.location.origin; // 현재 웹사이트의 기본 URL

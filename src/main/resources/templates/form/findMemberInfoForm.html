@@ -44,6 +44,9 @@
         let url = '/findEmail?memberNickname='+encodeURIComponent(memberNickname);
         axios.get(url)
             .then(response => {
+                console.log(response.data);
+                let memberEmail=document.getElementById('memberEmail');
+
                 if (response) {
                     let existingResultElement = document.getElementById("result");
 
@@ -54,8 +57,9 @@
                     let inputElement = document.getElementById("memberNickname");
                     let spanElement = document.createElement("span");
                     spanElement.id = 'result';
-                    spanElement.innerHTML = response.data;
+                    spanElement.innerHTML = '찾은 이메일입니다. '+response.data;
                     inputElement.insertAdjacentElement("afterend", spanElement);
+                    memberEmail.value=response.data;
                 } else {
                 }
             })

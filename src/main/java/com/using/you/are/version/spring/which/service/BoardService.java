@@ -84,15 +84,7 @@ public class BoardService {
         boardRepositoryJpa.replySave(replyEntity);
     }
 
-    public void deleteFile(BoardFileDto boardFileDto) {
-        BoardFileEntity fileEntity = BoardFileTransMapper.INSTANCE.dtoToEntity(boardFileDto);
-        BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardId(boardFileDto.getBoardId());
-        fileEntity.setBoardEntity(boardEntity);
-        boardRepositoryJpa.deleteFile(fileEntity);
-        multipleFileUpload.fileDelete(boardFileDto.getFileServerName());
 
-    }
 
     public void boardUpdate(BoardDto boardDto, List<MultipartFile> fileList) {
         BoardEntity boardEntity = BoardTransMapper.INSTANCE.dtoToEntity(boardDto);
@@ -119,7 +111,15 @@ public class BoardService {
         ReplyEntity replyEntity = ReplyTransMapper.INSTANCE.dtoToEntity(replyDto);
         boardRepositoryJpa.replyDelete(replyEntity);
     }
+    public void deleteFile(BoardFileDto boardFileDto) {
+        BoardFileEntity fileEntity = BoardFileTransMapper.INSTANCE.dtoToEntity(boardFileDto);
+        BoardEntity boardEntity = new BoardEntity();
+        boardEntity.setBoardId(boardFileDto.getBoardId());
+        fileEntity.setBoardEntity(boardEntity);
+        boardRepositoryJpa.deleteFile(fileEntity);
+        multipleFileUpload.fileDelete(boardFileDto.getFileServerName());
 
+    }
     public void deleteBoard(BoardDto boardDto) {
         BoardEntity boardEntity = BoardTransMapper.INSTANCE.dtoToEntity(boardDto);
         MemberInfo memberInfo = new MemberInfo();
