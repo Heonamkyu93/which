@@ -20,6 +20,7 @@ public class MemberInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usernumber_generator")
     @SequenceGenerator(name = "usernumber_generator", sequenceName = "userseq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long memberId; // member_id
     @Column(name = "member_email")
@@ -57,9 +58,9 @@ public class MemberInfo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date memberJoinDate; // member_join_date
 
-/*
+
     @OneToMany (mappedBy = "memberInfo")
-    private List<BoardEntity> boardEntityList=new ArrayList<>();*/
+    private List<BoardEntity> boardEntityList=new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

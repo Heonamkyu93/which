@@ -8,8 +8,9 @@
 </head>
 <body>
 <section>
-<h3 th:text="after-login">login</h3>
-
+    <li th:if="${#authorization.expression('isAuthenticated()')}">
+            <span>경! 로그인 성공 축!</span>
+    </li>
 
 
 

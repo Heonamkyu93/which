@@ -14,7 +14,7 @@ public class BoardFileEntity {
     @Id
     private String fileServerName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 }

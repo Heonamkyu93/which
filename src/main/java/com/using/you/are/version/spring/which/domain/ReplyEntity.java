@@ -16,6 +16,7 @@ public class ReplyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "replyNumber_generator")
     @SequenceGenerator(name = "replyNumber_generator", sequenceName = "reply_sequence", allocationSize = 1)
+ //   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long replyId;
 
 
@@ -26,11 +27,11 @@ public class ReplyEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date replyLastModifiedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private MemberInfo memberInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 
